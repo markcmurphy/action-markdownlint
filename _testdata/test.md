@@ -1,109 +1,100 @@
-# Current customer API
+# Channel App Best Practices
+
+<!-- Dev Center URL: https://developer.bigcommerce.com/api-docs/channels/guide/channel-app-best-practices -->
 
 <div class="otp" id="no-index">
 
-### On this page
-- [Current customer API](#current-customer-api)
-    - [On this page](#on-this-page)
-  - [Identifying logged-in customers securely](#identifying-logged-in-customers-securely)
-    - [Note](#note)
-  - [Example JavaScript](#example-javascript)
-    - [IAT claim](#iat-claim)
+## On this page
+
+  - [Modular features](#modular-features)
+  - [Syncing](#syncing)
+  - [Performance](#performance)
+  - [Logging](#logging)
+  - [Related resources](#related-resources)
 
 </div>
 
-## Identifying logged-in customers securely
+To enable the best user experience, below are a few items to keep in mind when developing a BigCommerce Channel App.
 
-Suppose your application interacts dynamically with the BigCommerce storefront and conveys specific information to a particular logged-in customer. You must confirm that customer's identity within the insecure environment of the user's browser before revealing any sensitive information.
+## Modular features
 
-To address this need, BigCommerce provides a Current Customer endpoint that your app can access via JavaScript on the storefront. This endpoint allows a remote application, such as a third-party subscription billing app, to return a JWT with identifying customer details. The information is signed with your [OAuth client secret](/api-docs/getting-started/basics/authentication#authentication_client-id-secret).
+As the specific needs of every merchant is different, the features of your app should be as modular as possible.
 
+### For merchants
 
-<div class="HubBlock--callout">
-<div class="CalloutBlock--info">
-<div class="HubBlock-content">
+Consider the audience and various use cases for your application:
 
-<!-- theme: info  -->
+- **Merchant A**: only interested in importing products and inventory.
+- **Merchant B**: interested in a bi-directional integration of products and sales that keeps data between the channel and BigCommerce in sync.
 
+Merchants should have the option to opt-in or out of the various features of your application.
 
-### Note
-> * An app client ID is required in requests to `/customer/current.jwt`.
-> * To generate an app client ID, create an app in the [BigCommerce Developer Portal](https://devtools.bigcommerce.com/).
-> * Use the app's secret to validate the signature on the JWT.
-> * The app doesn't need to be installed or published on a store to use the client ID to get the JWT
+### For support
 
-</div>
-</div>
-</div>
+If an issue occurs, a merchant should have the option to disable a specific feature that may not be behaving as expected. The idea here is to allow the merchant to continue using the features that are functional while temporarily resolving an issue - instead of having to disable the application completely.
 
+## Syncing
 
-## Example JavaScript
+For the various features of your application, it is typically a best practice to offer both a manual 'one time sync' option and automated sync options (based on various sync intervals).
 
-Below is an example JavaScript code snippet that will access this JWT. To test the JWT functionality, you can install this JavaScript on your sandbox BigCommerce store. You must include your application's client ID in the request to identify the requesting application.
+This will provide the merchant with more control over what is synced and when.
 
+Example Automated Sync Intervals:
 
+- **Do not update automatically**: The merchant should have an option to opt-out of automatic syncs.
+- **Every X Minutes**: This would trigger the associated event every x minutes.
+- **Real Time**: This would utilize webhooks to provide real-time updates.
 
-```html
-<script type="text/javascript">
-function customerJWT() {
-    var appClientId = "**BC_CLIENT_ID**"; // TODO: Fill this in with your app's client ID
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 ) {
-           if (xmlhttp.status == 200) {
-               alert('Customer JWT:\n' + xmlhttp.responseText);
-           }
-           else if (xmlhttp.status == 404) {
-              alert('Not logged in!');
-           }
-           else {
-               alert('Something went wrong');
-           }
-        }
-    };
-    xmlhttp.open("GET", "/customer/current.jwt?app_client_id="+appClientId, true);
-    xmlhttp.send();
-}
-customerJWT();
-</script>
-```
-The above JavaScript should alert to the browser with a JWT token if you are logged into the storefront with a customer account. If no customer is logged in, BigCommerce will return a `404` response, and you will see an error message. The JWT returned from this endpoint (example below) can be decoded on [JWT.IO](https://jwt.io/).
+## Performance
 
+To provide merchants with a positive integration experience, we expect point of sale applications to meet or exceed the following benchmark:
 
-**Example Logged In Customers Response**
-
-```json
-{
-  "customer": {
-    "id": 4927,
-    "email": "john.doe@gmail.com",
-    "group_id": "6"
-  },
-  "iss": "bc/apps",
-  "sub": "abc123",
-  "iat": 1480831863,
-  "exp": 1480832763,
-  "version": 1,
-  "aud": "6sv16tfx3j5gsopm42ss5dd67g2srvq",
-  "application_id": "6sv16tasdgr2b5hs5dd67g2srvq",
-  "store_hash": "abc123",
-  "operation": "current_customer"
-}
-```
-
-By design, your application should send this token to the application’s server, validate it against your client secret, and then use it as a trusted indication of the logged-in customer's identity, before displaying confidential information to them.
-
-An end-to-end example that displays a customer's recently purchased products is available in our [Ruby](https://github.com/bigcommerce/hello-world-app-ruby-sinatra/) and [PHP](https://github.com/bigcommerce/hello-world-app-php-silex/) sample apps.
-
-<div class="HubBlock--callout">
-<div class="CalloutBlock--info">
-<div class="HubBlock-content">
+- **Catalog Import/Export:** 100 Complex Products per Second.
 
 <!-- theme: info -->
 
-### IAT claim
-> The iat claim is only good for 30 seconds.
+> **Note**
+>
+> This volume of requests per second may hit the rate limits of lower tier BigCommerce plans - logic should be implemented around the response headers to ensure your application does not exceed the allowable number of requests for a given storefront.
 
-</div>
-</div>
-</div>
+For increased performance, consider using batch operations and parallel requests when possible.
+
+## Logging
+
+A log of all events should be kept and made accessible to the merchant utilizing the application.
+Logs should be broken out per service. For example, a user should be able to access all logs related to a specific feature.
+
+Logs should be provided in a light, human-readable format and appended to the running feed of logs:
+
+```shell
+20 Products Identified - 5 Products Created - 15 Products Updated - 0 Errors   |   12/10/19 @ 3:45PM CST
+```
+
+The merchant should also have the option to download verbose logs in CSV format:
+
+```shell
+POS ID, BC ID, EVENT
+34, 103, Product Created
+35, --, Error: Product Creation Skipped [Invalid product name]
+```
+
+These logs would provide more granular details on the event that took place and all affected products.
+
+## Related resources
+
+### Articles
+
+- [Channels Overview](https://developer.bigcommerce.com/api-docs/channels/channels-overview)
+- [Channels Toolkit Reference](https://developer.bigcommerce.com/api-docs/channels-toolkit-reference)
+- [Channel App Best Practices](https://developer.bigcommerce.com/api-docs/getting-started/best-practices)
+- [Becoming a Partner](https://developer.bigcommerce.com/api-docs/partner/becoming-a-partner)
+- [Authenticating BigCommerce's REST APIs](https://developer.bigcommerce.com/api-docs/getting-started/authentication/rest-api-authentication)
+- [Types of Apps](https://developer.bigcommerce.com/api-docs/getting-started/building-apps-bigcommerce/types-of-apps)
+- [Building an App](https://developer.bigcommerce.com/api-docs/getting-started/building-apps-bigcommerce/building-apps)
+- [App Store Approval Requirements](https://developer.bigcommerce.com/api-docs/partner/app-store-approval-requirements)
+- [BigDesign Component Library](https://developer.bigcommerce.com/big-design/?path=/story/badge--overview)
+- [Sell Everywhere with Channel Manager](https://support.bigcommerce.com/s/article/Selling-Everywhere-with-Channel-Manager)
+
+### Tools
+
+- [Channels Sample App](https://github.com/bigcommerce/channels-app)
