@@ -28,7 +28,7 @@ inputs:
   ### Flags for markdownlint-cli ###
   markdownlint_flags:
     description: "Options of markdownlint-cli command. Default: '.'"
-    default: '.'
+    default: '-r "/linting-rules/*" .'
 runs:
   using: 'docker'
   image: 'Dockerfile'
