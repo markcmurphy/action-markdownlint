@@ -1,28 +1,3 @@
-# Current customer API
-
-<div class="otp" id="no-index">
-
-### On this page
-- [Current customer API](#current-customer-api)
-    - [On this page](#on-this-page)
-  - [Identifying logged-in customers securely](#identifying-logged-in-customers-securely)
-    - [Note](#note)
-  - [Example JavaScript](#example-javascript)
-    - [IAT claim](#iat-claim)
-
-</div>
-
-## Identifying logged-in customers securely
-
-Suppose your application interacts dynamically with the BigCommerce storefront and conveys specific information to a particular logged-in customer. You must confirm that customer's identity within the insecure environment of the user's browser before revealing any sensitive information.
-
-To address this need, BigCommerce provides a Current Customer endpoint that your app can access via JavaScript on the storefront. This endpoint allows a remote application, such as a third-party subscription billing app, to return a JWT with identifying customer details. The information is signed with your [OAuth client secret](/api-docs/getting-started/basics/authentication#authentication_client-id-secret).
-
-
-<div class="HubBlock--callout">
-<div class="CalloutBlock--info">
-<div class="HubBlock-content">
-
 <!-- theme: info  -->
 ### Note
 > * An app client ID is required in requests to `/customer/current.jwt`.
@@ -39,34 +14,7 @@ To address this need, BigCommerce provides a Current Customer endpoint that your
 
 Below is an example JavaScript code snippet that will access this JWT. To test the JWT functionality, you can install this JavaScript on your sandbox BigCommerce store. You must include your application's client ID in the request to identify the requesting application.
 
-
-
-```html
-<script type="text/javascript">
-function customerJWT() {
-    var appClientId = "**BC_CLIENT_ID**"; // TODO: Fill this in with your app's client ID
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 ) {
-           if (xmlhttp.status == 200) {
-               alert('Customer JWT:\n' + xmlhttp.responseText);
-           }
-           else if (xmlhttp.status == 404) {
-              alert('Not logged in!');
-           }
-           else {
-               alert('Something went wrong');
-           }
-        }
-    };
-    xmlhttp.open("GET", "/customer/current.jwt?app_client_id="+appClientId, true);
-    xmlhttp.send();
-}
-customerJWT();
-</script>
-```
-The above JavaScript should alert to the browser with a JWT token if you are logged into the storefront with a customer account. If no customer is logged in, BigCommerce will return a `404` response, and you will see an error message. The JWT returned from this endpoint (example below) can be decoded on [JWT.IO](https://jwt.io/).
-The above JavaScript should alert to the browser with a JWT token if you are logged into the storefront with a customer account. If no customer is logged in, BigCommerce will return a `404` response, and you will see an error message. The JWT returned from this endpoint (example below) can be decoded on [JWT.IO](https://jwt.io/).
+he above JavaScript should alert to the browser with a JWT token if you are logged into the storefront with a customer account. If no customer is logged in, BigCommerce will return a `404` response, and you will see an error message. The JWT returned from this endpoint (example below) can be decoded on [JWT.IO](https://jwt.io/).
 The above JavaScript should alert to the browser with a JWT token if you are logged into the storefront with a customer account. If no customer is logged in, BigCommerce will return a `404` response, and you will see an error message. The JWT returned from this endpoint (example below) can be decoded on [JWT.IO](https://jwt.io/).
 
 
@@ -100,6 +48,8 @@ An end-to-end example that displays a customer's recently purchased products is 
 <div class="HubBlock-content">
 
 <!-- theme: info -->
+
+
 
 ### IAT claim
 > The iat claim is only good for 30 seconds.
