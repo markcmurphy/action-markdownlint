@@ -1,109 +1,147 @@
-# Current customer API
+# Managing Apps in the Developer Portal
 
 <div class="otp" id="no-index">
 
-### On this page
-- [Current customer API](#current-customer-api)
-    - [On this page](#on-this-page)
-  - [Identifying logged-in customers securely](#identifying-logged-in-customers-securely)
-    - [Note](#note)
-  - [Example JavaScript](#example-javascript)
-    - [IAT claim](#iat-claim)
+### On This Page
+- [Managing Apps in the Developer Portal](#managing-apps-in-the-developer-portal)
+    - [On This Page](#on-this-page)
+  - [Logging in](#logging-in)
+  - [Creating apps](#creating-apps)
+  - [Editing apps](#editing-apps)
+  - [Editing technical details](#editing-technical-details)
+  - [Viewing credentials](#viewing-credentials)
+  - [Submitting apps](#submitting-apps)
+  - [Next steps](#next-steps)
+  - [Resources](#resources)
+    - [Related articles](#related-articles)
+    - [Other resources](#other-resources)
 
 </div>
 
-## Identifying logged-in customers securely
+App developers create, edit, and submit apps for approval using the [Developer Portal](https://devtools.bigcommerce.com/). In [Beginning App Development](https://developer.bigcommerce.com/api-docs/apps/guide/development) we briefly touched on how to create a draft app. In this article, we'll go over how to perform other common app management tasks in the [Developer Portal](https://devtools.bigcommerce.com/). For detailed instructions on submitting apps for approval, see [Publishing Apps](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
 
-Suppose your application interacts dynamically with the BigCommerce storefront and conveys specific information to a particular logged-in customer. You must confirm that customer's identity within the insecure environment of the user's browser before revealing any sensitive information.
+## Logging in
 
-To address this need, BigCommerce provides a Current Customer endpoint that your app can access via JavaScript on the storefront. This endpoint allows a remote application, such as a third-party subscription billing app, to return a JWT with identifying customer details. The information is signed with your [OAuth client secret](/api-docs/getting-started/basics/authentication#authentication_client-id-secret).
-
+Log in to or create a [Developer Portal](https://devtools.bigcommerce.com) account at [devtools.bigcommerce.com](https://devtools.bigcommerce.com).
 
 <div class="HubBlock--callout">
 <div class="CalloutBlock--info">
 <div class="HubBlock-content">
 
-<!-- theme: info  -->
-
-
-### Note
-> * An app client ID is required in requests to `/customer/current.jwt`.
-> * To generate an app client ID, create an app in the [BigCommerce Developer Portal](https://devtools.bigcommerce.com/).
-> * Use the app's secret to validate the signature on the JWT.
-> * The app doesn't need to be installed or published on a store to use the client ID to get the JWT
+> ### Note
+> * `DRAFT` apps can only be installed on stores owned by the same email address as the developer portal account's email address.
 
 </div>
 </div>
 </div>
 
+## Creating apps
 
-## Example JavaScript
+To create an app, do the following:
 
-Below is an example JavaScript code snippet that will access this JWT. To test the JWT functionality, you can install this JavaScript on your sandbox BigCommerce store. You must include your application's client ID in the request to identify the requesting application.
+1. Navigate to **[My Apps](https://devtools.bigcommerce.com/my/apps)**.
+2. Click **Create an app**.
+3. Give the app a name.
+4. Click **Create**.
 
+![Developer Portal](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-01.png "Developer Portal")
 
-
-```html
-<script type="text/javascript">
-function customerJWT() {
-    var appClientId = "**BC_CLIENT_ID**"; // TODO: Fill this in with your app's client ID
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 ) {
-           if (xmlhttp.status == 200) {
-               alert('Customer JWT:\n' + xmlhttp.responseText);
-           }
-           else if (xmlhttp.status == 404) {
-              alert('Not logged in!');
-           }
-           else {
-               alert('Something went wrong');
-           }
-        }
-    };
-    xmlhttp.open("GET", "/customer/current.jwt?app_client_id="+appClientId, true);
-    xmlhttp.send();
-}
-customerJWT();
-</script>
-```
-The above JavaScript should alert to the browser with a JWT token if you are logged into the storefront with a customer account. If no customer is logged in, BigCommerce will return a `404` response, and you will see an error message. The JWT returned from this endpoint (example below) can be decoded on [JWT.IO](https://jwt.io/).
-
-
-**Example Logged In Customers Response**
-
-```json
-{
-  "customer": {
-    "id": 4927,
-    "email": "john.doe@gmail.com",
-    "group_id": "6"
-  },
-  "iss": "bc/apps",
-  "sub": "abc123",
-  "iat": 1480831863,
-  "exp": 1480832763,
-  "version": 1,
-  "aud": "6sv16tfx3j5gsopm42ss5dd67g2srvq",
-  "application_id": "6sv16tasdgr2b5hs5dd67g2srvq",
-  "store_hash": "abc123",
-  "operation": "current_customer"
-}
-```
-
-By design, your application should send this token to the application’s server, validate it against your client secret, and then use it as a trusted indication of the logged-in customer's identity, before displaying confidential information to them.
-
-An end-to-end example that displays a customer's recently purchased products is available in our [Ruby](https://github.com/bigcommerce/hello-world-app-ruby-sinatra/) and [PHP](https://github.com/bigcommerce/hello-world-app-php-silex/) sample apps.
+[Learn more about completing registration fields and submitting apps for approval](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
 
 <div class="HubBlock--callout">
 <div class="CalloutBlock--info">
 <div class="HubBlock-content">
 
-<!-- theme: info -->
-
-### IAT claim
-> The iat claim is only good for 30 seconds.
+> ### Note
+> * The app's name is only visible in the developer portal.
 
 </div>
 </div>
 </div>
+
+## Editing apps
+
+Edit an app by clicking **Edit App**.
+
+![Developer Portal](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-01.png "Developer Portal")
+
+[Learn more about completing registration fields and submitting apps for approval](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
+
+<div class="HubBlock--callout">
+<div class="CalloutBlock--warnings">
+<div class="HubBlock-content">
+
+> ### Note
+> * After saving, edits are effective immediately in the control panel; however, edits can take up to 24 hours to appear in the [Apps Marketplace](https://www.bigcommerce.com/apps/).
+
+</div>
+</div>
+</div>
+
+## Editing technical details
+
+Click **Edit App**, then navigate to the technical tab to edit enabled features, callback URLs, and OAuth scopes.
+
+![Techical Details](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-03.png "Technical Details")
+
+[Learn more about completing registration fields and submitting apps for approval](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
+
+<div class="HubBlock--callout">
+<div class="CalloutBlock--warning">
+<div class="HubBlock-content">
+
+> ### Note
+> * After saving, edits to enabled features, callbacks URLs, and OAuth scopes are effective immediately for all app users.
+
+</div>
+</div>
+</div>
+
+## Viewing credentials
+
+Click **View Client ID** to view an app's API credentials.
+
+![Developer Portal](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-01.png "Developer Portal")
+
+[Learn how to use app credentials in the app OAuth flow](https://developer.bigcommerce.com/api-docs/apps/guide/auth).
+
+<div class="HubBlock--callout">
+<div class="CalloutBlock--info">
+<div class="HubBlock-content">
+
+> ### Note
+> * [OAuth Client ID is no longer required to authenticate requests to api.bigcommerce.com](https://developer.bigcommerce.com/changelog#posts/o-auth-client-id-is-no-longer-required-for-requests-to-api-bigcommerce-com).
+
+</div>
+</div>
+</div>
+
+## Submitting apps
+
+Submit apps for [Apps Marketplace](https://www.bigcommerce.com/apps) approval by clicking **Submit**.
+
+![Developer Portal](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-01.png "Developer Portal")
+
+[Learn more about completing app registration fields and submitting apps for approval](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
+
+## Next steps
+* [Implement the OAuth flow](https://developer.bigcommerce.com/api-docs/apps/guide/auth).
+* [Handle app callbacks](https://developer.bigcommerce.com/api-docs/apps/guide/callbacks).
+
+## Resources
+
+### Related articles
+
+* [Introduction to Building Apps](https://developer.bigcommerce.com/api-docs/apps/guide/intro)
+* [Beginning App Development](https://developer.bigcommerce.com/api-docs/apps/guide/development)
+* [Implementing App OAuth](https://developer.bigcommerce.com/api-docs/apps/guide/auth)
+* [App Approval Requirements](https://developer.bigcommerce.com/api-docs/apps/guide/requirements)
+* [Publishing an App](https://developer.bigcommerce.com/api-docs/apps/guide/publishing)
+
+### Other resources
+
+* [Developer Portal](https://devtools.bigcommerce.com/) (devtools.bigcommerce.com)
+* [Partner Portal](https://partners.bigcommerce.com/English/) (partners.bigcommerce.com)
+* [Technology Partner Program](https://partners.bigcommerce.com/English/register_email.aspx) (partners.bigcommerce.com)
+* [BigCommerce Apps Marketplace](https://www.bigcommerce.com/apps/) (bigcommerce.com)
+* [Media Kit](https://www.bigcommerce.com/press/media-kit/) (bigcommerce.com)
