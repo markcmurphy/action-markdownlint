@@ -1,147 +1,100 @@
-# Managing Apps in the Developer Portal
+# Channel App Best Practices
+
+<!-- Dev Center URL: https://developer.bigcommerce.com/api-docs/channels/guide/channel-app-best-practices -->
 
 <div class="otp" id="no-index">
 
-### On This Page
-- [Managing Apps in the Developer Portal](#managing-apps-in-the-developer-portal)
-    - [On This Page](#on-this-page)
-  - [Logging in](#logging-in)
-  - [Creating apps](#creating-apps)
-  - [Editing apps](#editing-apps)
-  - [Editing technical details](#editing-technical-details)
-  - [Viewing credentials](#viewing-credentials)
-  - [Submitting apps](#submitting-apps)
-  - [Next steps](#next-steps)
-  - [Resources](#resources)
-    - [Related articles](#related-articles)
-    - [Other resources](#other-resources)
+## On this page
+
+  - [Modular features](#modular-features)
+  - [Syncing](#syncing)
+  - [Performance](#performance)
+  - [Logging](#logging)
+  - [Related resources](#related-resources)
 
 </div>
 
-App developers create, edit, and submit apps for approval using the [Developer Portal](https://devtools.bigcommerce.com/). In [Beginning App Development](https://developer.bigcommerce.com/api-docs/apps/guide/development) we briefly touched on how to create a draft app. In this article, we'll go over how to perform other common app management tasks in the [Developer Portal](https://devtools.bigcommerce.com/). For detailed instructions on submitting apps for approval, see [Publishing Apps](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
+To enable the best user experience, below are a few items to keep in mind when developing a BigCommerce Channel App.
 
-## Logging in
+## Modular features
 
-Log in to or create a [Developer Portal](https://devtools.bigcommerce.com) account at [devtools.bigcommerce.com](https://devtools.bigcommerce.com).
+As the specific needs of every merchant is different, the features of your app should be as modular as possible.
 
-<div class="HubBlock--callout">
-<div class="CalloutBlock--info">
-<div class="HubBlock-content">
+### For merchants
 
-> ### Note
-> * `DRAFT` apps can only be installed on stores owned by the same email address as the developer portal account's email address.
+Consider the audience and various use cases for your application:
 
-</div>
-</div>
-</div>
+- **Merchant A**: only interested in importing products and inventory.
+- **Merchant B**: interested in a bi-directional integration of products and sales that keeps data between the channel and BigCommerce in sync.
 
-## Creating apps
+Merchants should have the option to opt-in or out of the various features of your application.
 
-To create an app, do the following:
+### For support
 
-1. Navigate to **[My Apps](https://devtools.bigcommerce.com/my/apps)**.
-2. Click **Create an app**.
-3. Give the app a name.
-4. Click **Create**.
+If an issue occurs, a merchant should have the option to disable a specific feature that may not be behaving as expected. The idea here is to allow the merchant to continue using the features that are functional while temporarily resolving an issue - instead of having to disable the application completely.
 
-![Developer Portal](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-01.png "Developer Portal")
+## Syncing
 
-[Learn more about completing registration fields and submitting apps for approval](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
+For the various features of your application, it is typically a best practice to offer both a manual 'one time sync' option and automated sync options (based on various sync intervals).
 
-<div class="HubBlock--callout">
-<div class="CalloutBlock--info">
-<div class="HubBlock-content">
+This will provide the merchant with more control over what is synced and when.
 
-> ### Note
-> * The app's name is only visible in the developer portal.
+Example Automated Sync Intervals:
 
-</div>
-</div>
-</div>
+- **Do not update automatically**: The merchant should have an option to opt-out of automatic syncs.
+- **Every X Minutes**: This would trigger the associated event every x minutes.
+- **Real Time**: This would utilize webhooks to provide real-time updates.
 
-## Editing apps
+## Performance
 
-Edit an app by clicking **Edit App**.
+To provide merchants with a positive integration experience, we expect point of sale applications to meet or exceed the following benchmark:
 
-![Developer Portal](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-01.png "Developer Portal")
+- **Catalog Import/Export:** 100 Complex Products per Second.
 
-[Learn more about completing registration fields and submitting apps for approval](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
+<!-- theme: info -->
 
-<div class="HubBlock--callout">
-<div class="CalloutBlock--warnings">
-<div class="HubBlock-content">
+> **Note**
+>
+> This volume of requests per second may hit the rate limits of lower tier BigCommerce plans - logic should be implemented around the response headers to ensure your application does not exceed the allowable number of requests for a given storefront.
 
-> ### Note
-> * After saving, edits are effective immediately in the control panel; however, edits can take up to 24 hours to appear in the [Apps Marketplace](https://www.bigcommerce.com/apps/).
+For increased performance, consider using batch operations and parallel requests when possible.
 
-</div>
-</div>
-</div>
+## Logging
 
-## Editing technical details
+A log of all events should be kept and made accessible to the merchant utilizing the application.
+Logs should be broken out per service. For example, a user should be able to access all logs related to a specific feature.
 
-Click **Edit App**, then navigate to the technical tab to edit enabled features, callback URLs, and OAuth scopes.
+Logs should be provided in a light, human-readable format and appended to the running feed of logs:
 
-![Techical Details](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-03.png "Technical Details")
+```shell
+20 Products Identified - 5 Products Created - 15 Products Updated - 0 Errors   |   12/10/19 @ 3:45PM CST
+```
 
-[Learn more about completing registration fields and submitting apps for approval](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
+The merchant should also have the option to download verbose logs in CSV format:
 
-<div class="HubBlock--callout">
-<div class="CalloutBlock--warning">
-<div class="HubBlock-content">
+```shell
+POS ID, BC ID, EVENT
+34, 103, Product Created
+35, --, Error: Product Creation Skipped [Invalid product name]
+```
 
-> ### Note
-> * After saving, edits to enabled features, callbacks URLs, and OAuth scopes are effective immediately for all app users.
+These logs would provide more granular details on the event that took place and all affected products.
 
-</div>
-</div>
-</div>
+## Related resources
 
-## Viewing credentials
+### Articles
 
-Click **View Client ID** to view an app's API credentials.
+- [Channels Overview](https://developer.bigcommerce.com/api-docs/channels/channels-overview)
+- [Channels Toolkit Reference](https://developer.bigcommerce.com/api-docs/channels-toolkit-reference)
+- [Channel App Best Practices](https://developer.bigcommerce.com/api-docs/getting-started/best-practices)
+- [Becoming a Partner](https://developer.bigcommerce.com/api-docs/partner/becoming-a-partner)
+- [Authenticating BigCommerce's REST APIs](https://developer.bigcommerce.com/api-docs/getting-started/authentication/rest-api-authentication)
+- [Types of Apps](https://developer.bigcommerce.com/api-docs/getting-started/building-apps-bigcommerce/types-of-apps)
+- [Building an App](https://developer.bigcommerce.com/api-docs/getting-started/building-apps-bigcommerce/building-apps)
+- [App Store Approval Requirements](https://developer.bigcommerce.com/api-docs/partner/app-store-approval-requirements)
+- [BigDesign Component Library](https://developer.bigcommerce.com/big-design/?path=/story/badge--overview)
+- [Sell Everywhere with Channel Manager](https://support.bigcommerce.com/s/article/Selling-Everywhere-with-Channel-Manager)
 
-![Developer Portal](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-01.png "Developer Portal")
+### Tools
 
-[Learn how to use app credentials in the app OAuth flow](https://developer.bigcommerce.com/api-docs/apps/guide/auth).
-
-<div class="HubBlock--callout">
-<div class="CalloutBlock--info">
-<div class="HubBlock-content">
-
-> ### Note
-> * [OAuth Client ID is no longer required to authenticate requests to api.bigcommerce.com](https://developer.bigcommerce.com/changelog#posts/o-auth-client-id-is-no-longer-required-for-requests-to-api-bigcommerce-com).
-
-</div>
-</div>
-</div>
-
-## Submitting apps
-
-Submit apps for [Apps Marketplace](https://www.bigcommerce.com/apps) approval by clicking **Submit**.
-
-![Developer Portal](https://storage.googleapis.com/bigcommerce-production-dev-center/images/apps-04-developer-portal-01.png "Developer Portal")
-
-[Learn more about completing app registration fields and submitting apps for approval](https://developer.bigcommerce.com/api-docs/apps/guide/publishing).
-
-## Next steps
-* [Implement the OAuth flow](https://developer.bigcommerce.com/api-docs/apps/guide/auth).
-* [Handle app callbacks](https://developer.bigcommerce.com/api-docs/apps/guide/callbacks).
-
-## Resources
-
-### Related articles
-
-* [Introduction to Building Apps](https://developer.bigcommerce.com/api-docs/apps/guide/intro)
-* [Beginning App Development](https://developer.bigcommerce.com/api-docs/apps/guide/development)
-* [Implementing App OAuth](https://developer.bigcommerce.com/api-docs/apps/guide/auth)
-* [App Approval Requirements](https://developer.bigcommerce.com/api-docs/apps/guide/requirements)
-* [Publishing an App](https://developer.bigcommerce.com/api-docs/apps/guide/publishing)
-
-### Other resources
-
-* [Developer Portal](https://devtools.bigcommerce.com/) (devtools.bigcommerce.com)
-* [Partner Portal](https://partners.bigcommerce.com/English/) (partners.bigcommerce.com)
-* [Technology Partner Program](https://partners.bigcommerce.com/English/register_email.aspx) (partners.bigcommerce.com)
-* [BigCommerce Apps Marketplace](https://www.bigcommerce.com/apps/) (bigcommerce.com)
-* [Media Kit](https://www.bigcommerce.com/press/media-kit/) (bigcommerce.com)
+- [Channels Sample App](https://github.com/bigcommerce/channels-app)
