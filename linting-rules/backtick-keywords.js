@@ -52,7 +52,7 @@ const keywords = [
     new WordPattern("graphite.conf"),
     new WordPattern("command_malformed.log"),
     new WordPattern("stdout"),
-    new WordPattern("stderr"),
+    new WordPattern("stdout"),
     new WordPattern("SIGTERM"),
     new WordPattern("NaN"),
     new WordPattern(".png", { noWordBoundary: true }),
