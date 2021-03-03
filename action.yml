@@ -8,27 +8,33 @@ inputs:
   ### Flags for reviewdog ###
   level:
     description: 'Report level for reviewdog [info,warning,error]'
-    default: 'error'
+    default: 'warning'
+    required: true
   reporter:
     description: 'Reporter of reviewdog command [github-check,github-pr-review].'
     default: 'github-pr-review'
+    required: true
   filter_mode:
     description: |
       Filtering mode for the reviewdog command [added,diff_context,file,nofilter].
       Default is added.
     default: 'added'
+    required: true
   fail_on_error:
     description: |
       Exit code for reviewdog when errors are found [true,false]
       Default is `false`.
     default: 'false'
+    required: true
   reviewdog_flags:
     description: 'Additional reviewdog flags'
     default: ''
+    required: true
   ### Flags for markdownlint-cli ###
   markdownlint_flags:
     description: "Options of markdownlint-cli command. Default: '.'"
-    default: '-r "/linting-rules/*" .'
+    default: '-r "/linting-rules/*" ./testdata/*'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
