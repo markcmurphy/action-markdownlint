@@ -22,7 +22,7 @@ test('HTTP related words should be backticked', async t => {
         const expected = [
             `incorrect.md: 3: MD103/backtick-http HTTP keywords must be fenced. [Expected \`GET\`. Actual GET.]\n`
         ].join('\n');
-        
-        t.true(err.stdout === expected);
+        t.true(err.stdout === '');
+        t.true(err.stderr === expected);
     }
 });

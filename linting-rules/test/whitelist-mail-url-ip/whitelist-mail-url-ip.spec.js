@@ -22,7 +22,7 @@ test('Use example names from the Axibase guide.', async t => {
         const expected = [
             `incorrect.md: 3: MD104/whitelist-mail-url-ip Example is prohibited, refer to whitelist. [Wrong: 'reader:my_password@192.0.2.7'.]\n`
         ].join('\n');
-        
-        t.true(err.stdout === expected);
+        t.true(err.stdout === '');
+        t.true(err.stderr === expected);
     }
 });

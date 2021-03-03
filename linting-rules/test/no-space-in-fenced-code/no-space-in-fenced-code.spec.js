@@ -22,7 +22,7 @@ test('No whitespace characters at the beginning of code block.', async t => {
         const expected = [
             `incorrect.md: 4: MD107/no-space-in-fenced-code Remove whitespace characters at the beginning of code block.\n`
         ].join('\n');
-        
-        t.true(err.stdout === expected);
+        t.true(err.stdout === '');
+        t.true(err.stderr === expected);
     }
 });
