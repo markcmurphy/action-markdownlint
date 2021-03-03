@@ -18,6 +18,6 @@ test('Correct file doesn\'t reproduce errors' , async t => {
         await lint('test-config.json', tested_rule, 'correct.md')
             .then(res => t.is(res.code, 0))
             .catch(res => {
-                t.is(res.stdout, '','Unexpected err, stdout must be empty' )
+                t.is(res.stderr, '','Unexpected err, stderr must be empty' )
             })
 });

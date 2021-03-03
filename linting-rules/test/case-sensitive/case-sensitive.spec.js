@@ -22,6 +22,7 @@ test('Keywords must have appropriate case.', async t => {
         const expected = [
             `incorrect.md: 3: MD106/case-sensitive Keywords must have appropriate case. [Expected GZIP. Actual gzip.]\n`
         ].join('\n');
-        t.true(err.stdout === expected);
+        t.true(err.stdout === '');
+        t.true(err.stderr === expected);
     }
 });
