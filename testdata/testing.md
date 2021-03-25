@@ -30,8 +30,6 @@
   - [Sample API workflows](#sample-api-workflows)
     - [Creating orders from a cart](#creating-orders-from-a-cart)
     - [Create an Order Directly](#create-an-order-directly)
-  - [Related resources](#related-resources)
-    - [Articles](#articles)
     - [Endpoints](#endpoints)
     - [Tools](#tools)
 
@@ -239,10 +237,12 @@ Merchants can use BigCommerce's [PCI DSS AOC](https://support.mybigcommerce.com/
 	2.  Add Line Items or Custom Line Items
 2.  Add a [Billing Address](/api-reference/cart-checkout/server-server-checkout-api/checkout-billing-address/checkoutsbillingaddressbycheckoutidpost) to the [Cart](/api-reference/cart-checkout/server-server-cart-api/cart/createacart) changing it to a Checkout
 3.  Add a [Consignment](/api-reference/cart-checkout/server-server-checkout-api/checkout-consignments/checkoutsconsignmentsbycheckoutidpost) to Checkout with the line items and the `consignments.available_shipping_options` query
+
+
 4. Update each [Consignment](https://developer.bigcommerce.com/api-reference/cart-checkout/server-server-checkout-api/checkout-consignments) with the chosen shipping option from the Add Consignment response.
 5.  Create the Order by sending a request to [Create Order](/api-reference/cart-checkout/server-server-checkout-api/checkout/createanorder)
-	1.  Returns an `order_id`
-	2. Order is created in `incomplete` status
+	3.  Returns an `order_id`
+	4. Order is created in `incomplete` status
 6.  Take a Payment for the Order using one of the two methods below
 
 ### Create an Order Directly
@@ -255,29 +255,7 @@ Merchants can use BigCommerce's [PCI DSS AOC](https://support.mybigcommerce.com/
 	5. Add a Shipping Address
 	6. Create a custom shipping quote
 2.  Take a Payment for the Order using one of the two methods below
-3.  Vaulted Card -- The shopper has saved a credit card
-	1. [Get Payment Methods](/api-reference/payments/payments-create-payment-token-api/payment-methods/paymentsmethodsget)
-	2.  [Create Access Token](/api-reference/payments/payments-create-payment-token-api/payment-access-token/paymentsaccesstokenspost)
-	3.  [Process Payment](/api-reference/payments/payments-process-payments/payment/paymentspost)
-4.  Credit Card -- The shopper has not saved a credit card
-	1. [Create Access Token](/api-reference/payments/payments-create-payment-token-api/payment-access-token/paymentsaccesstokenspost)
-	2. [Process Payment](/api-reference/payments/payments-process-payments/payment/paymentspost)
 
-## Related resources
-
-### Articles
-- [Customers Overview](https://developer.bigcommerce.com/api-docs/customers/customers-subscribers-overview)
-- [Customer Login API](https://developer.bigcommerce.com/api-docs/customers/customer-login-api)
-- [Launching your store](https://support.bigcommerce.com/s/article/Launching-Your-Store)
-- [PCI Compliance](https://support.bigcommerce.com/s/article/PCI-Compliance)
-- [Multisite Ecommerce with WordPress and BigCommerce](https://medium.com/bigcommerce-developer-blog/multi-site-ecommerce-with-wordpress-and-bigcommerce-40dee194f8a)
-- [Matter Makes Waves with a Headless Build using BigCommerce for WordPress](https://medium.com/bigcommerce-developer-blog/matter-makes-waves-with-a-headless-build-using-bigcommerce-for-wordpress-a572bad4bdf8)
-- [New Era in Headless CaaS](https://www.bigcommerce.com/new-era-headless-caas/)
-- [BigCommerce Doubles Down on Headless Commerce with BloomReach, Sitecore, Adobe Experience Manager, and More](https://www.bigcommerce.com/blog/flexible-headless-commerce-solutions/)
-- [Merchants Classification Levels Visa](https://usa.visa.com/support/small-business/security-compliance.html#3)
-- [Merchants Classification Levels Mastercard](https://www.mastercard.us/en-us/merchants/safety-security/security-recommendations/merchants-need-to-know.html)
-- [Self Assessment Questionnaire (SAQ) Types and Identifying which SAQ is for you](https://www.pcisecuritystandards.org/documents/SAQ-InstrGuidelines-v3_2_1.pdf?agreement=true&time=1562173376464)
-- [Maintaining Payment Security](https://www.pcisecuritystandards.org/pci_security/maintaining_payment_security)
 
 ### Endpoints
 - [Catalog API](https://developer.bigcommerce.com/api-reference/catalog/catalog-api)
